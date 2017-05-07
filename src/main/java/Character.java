@@ -1,8 +1,5 @@
-public abstract class Character {
-  int posX, posY;
-  String image;
+public abstract class Character extends GameObject {
   String direction;
-
 
   void generateDirection() {
     int i = (int) (Math.random() * 4);
