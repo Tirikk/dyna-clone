@@ -14,6 +14,6 @@ public class Main {
     frame.setVisible(true);
     frame.pack();
 
-//    frame.addKeyListener(gameEngine);
+    frame.addKeyListener(gameEngine);
   }
 }
