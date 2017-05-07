@@ -36,17 +36,17 @@ public class Monster extends Character {
     final Runnable animator = () -> {
       try {
         image = "src/main/resources/sprites/monster/monster-2.png";
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(450);
         image = "src/main/resources/sprites/monster/monster-1.png";
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(450);
         image = "src/main/resources/sprites/monster/monster-0.png";
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(450);
         image = "src/main/resources/sprites/monster/monster-1.png";
-        TimeUnit.MILLISECONDS.sleep(500);
+        TimeUnit.MILLISECONDS.sleep(450);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     };
-    final ScheduledFuture<?> animHandle = scheduler.scheduleAtFixedRate(animator, 500, 500, TimeUnit.MILLISECONDS);
+    final ScheduledFuture<?> animHandle = scheduler.scheduleAtFixedRate(animator, 450, 450, TimeUnit.MILLISECONDS);
   }
 }

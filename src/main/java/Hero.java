@@ -4,8 +4,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Hero extends Character {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-  private ScheduledFuture<?> moverHandle;
+  private final ScheduledExecutorService moveScheduler = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService animScheduler = Executors.newScheduledThreadPool(1);
+  private ScheduledFuture<?> moveUpHandle, moveDownHandle, moveLeftHandle, moveRightHandle;
+  private ScheduledFuture<?> downAnim, upAnim, leftAnim, rightAnim;
+  boolean moving;
 
   void moveHeroUp() {
     final Runnable mover = () -> {
@@ -26,12 +29,27 @@ public class Hero extends Character {
           posY--;
         }
       }
-      image = "src/main/resources/sprites/hero/hero-up-2.png";
-      if (posY % 72 == 0) {
-        moverHandle.cancel(true);
+      if (!moving) {
+        moveUpHandle.cancel(true);
+        upAnim.cancel(true);
+        image = "src/main/resources/sprites/hero/hero-up-2.png";
       }
     };
-    moverHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    final Runnable animator = () -> {
+      try {
+        image = "src/main/resources/sprites/hero/hero-up-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-up-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-up-3.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-up-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+      } catch (InterruptedException e) {
+      }
+    };
+    moveUpHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    upAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroDown() {
@@ -53,14 +71,28 @@ public class Hero extends Character {
           posY++;
         }
       }
-      image = "src/main/resources/sprites/hero/hero-down-2.png";
-      if (posY % 72 == 0) {
-        moverHandle.cancel(true);
+      if (!moving) {
+        moveDownHandle.cancel(true);
+        downAnim.cancel(true);
+        image = "src/main/resources/sprites/hero/hero-down-2.png";
       }
     };
-    moverHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    final Runnable animator = () -> {
+      try {
+        image = "src/main/resources/sprites/hero/hero-down-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-down-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-down-3.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-down-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+      } catch (InterruptedException e) {
+      }
+    };
+    moveDownHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    downAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
   }
-
 
   void moveHeroLeft() {
     final Runnable mover = () -> {
@@ -81,12 +113,27 @@ public class Hero extends Character {
           posX--;
         }
       }
-      image = "src/main/resources/sprites/hero/hero-left-2.png";
-      if (posX % 72 == 0) {
-        moverHandle.cancel(true);
+      if (!moving) {
+        moveLeftHandle.cancel(true);
+        leftAnim.cancel(true);
+        image = "src/main/resources/sprites/hero/hero-left-2.png";
       }
     };
-    moverHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    final Runnable animator = () -> {
+      try {
+        image = "src/main/resources/sprites/hero/hero-left-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-left-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-left-3.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-left-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+      } catch (InterruptedException e) {
+      }
+    };
+    moveLeftHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    leftAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroRight() {
@@ -108,11 +155,26 @@ public class Hero extends Character {
           posX++;
         }
       }
-      image = "src/main/resources/sprites/hero/hero-right-2.png";
-      if (posX % 72 == 0) {
-        moverHandle.cancel(true);
+      if (!moving) {
+        moveRightHandle.cancel(true);
+        rightAnim.cancel(true);
+        image = "src/main/resources/sprites/hero/hero-right-2.png";
       }
     };
-    moverHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    final Runnable animator = () -> {
+      try {
+        image = "src/main/resources/sprites/hero/hero-right-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-right-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-right-3.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-right-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+      } catch (InterruptedException e) {
+      }
+    };
+    moveRightHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    rightAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
   }
 }

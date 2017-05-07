@@ -13,14 +13,15 @@ public class GameEngine extends JComponent implements KeyListener {
   private Hero hero = new Hero();
   private ArrayList<Character> toDraw = new ArrayList<>();
   private ArrayList<Character> enemyList = new ArrayList<>();
+  private int keyPressed = 0;
 
   GameEngine() {
     setPreferredSize(new Dimension(715, 715));
     setVisible(true);
-    generateElements();
+    generateElements(getGraphics());
   }
 
-  private void generateElements() {
+  private void generateElements(Graphics g) {
     Map.generateMatrix();
     hero.posX = 0;
     hero.posY = 0;
@@ -42,12 +43,12 @@ public class GameEngine extends JComponent implements KeyListener {
       }
     };
     final ScheduledFuture<?> moverHandle =
-            scheduler.scheduleAtFixedRate(mover, 20, 20, TimeUnit.MILLISECONDS);
+            scheduler.scheduleAtFixedRate(mover, 30, 30, TimeUnit.MILLISECONDS);
   }
 
   private void repaintCanvas() {
     final Runnable repainter = this::repaint;
-    final ScheduledFuture<?> repainterHandle = scheduler.scheduleAtFixedRate(repainter, 0, 10, TimeUnit
+    final ScheduledFuture<?> repainterHandle = scheduler.scheduleAtFixedRate(repainter, 0, 30, TimeUnit
             .MILLISECONDS);
   }
 
@@ -57,19 +58,48 @@ public class GameEngine extends JComponent implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
+    if (e.getKeyCode() == KeyEvent.VK_DOWN && keyPressed < 1) {
+      keyPressed++;
+      hero.moving = true;
+      hero.moveHeroDown();
+    } else if (e.getKeyCode() == KeyEvent.VK_UP && keyPressed < 1) {
+      keyPressed++;
+      hero.moving = true;
+      hero.moveHeroUp();
+    } else if (e.getKeyCode() == KeyEvent.VK_LEFT && keyPressed < 1) {
+      keyPressed++;
+      hero.moving = true;
+      hero.moveHeroLeft();
+    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && keyPressed < 1) {
+      keyPressed++;
+      hero.moving = true;
+      hero.moveHeroRight();
+    }
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-    //    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-    //      hero.moveHeroDown();
-    //    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-    //      hero.moveHeroUp();
-    //    } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-    //      hero.moveHeroLeft();
-    //    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-    //      hero.moveHeroRight();
-    //    }
+    if (e.getKeyCode() == KeyEvent.VK_DOWN && keyPressed > 0) {
+      if (keyPressed > 0) {
+        keyPressed--;
+      }
+      hero.moving = false;
+    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+      if (keyPressed > 0) {
+        keyPressed--;
+      }
+      hero.moving = false;
+    } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+      if (keyPressed > 0) {
+        keyPressed--;
+      }
+      hero.moving = false;
+    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+      if (keyPressed > 0) {
+        keyPressed--;
+      }
+      hero.moving = false;
+    }
   }
 
   @Override
