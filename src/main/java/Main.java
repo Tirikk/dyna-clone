@@ -5,7 +5,7 @@ public class Main {
 
   public static void main(String[] args) {
     JFrame frame = new JFrame("Dyna");
-//    BackgroundPanel background = new BackgroundPanel();
+//    Background background = new Background();
     GameEngine gameEngine = new GameEngine();
 //    frame.add(background);
     frame.add(gameEngine);

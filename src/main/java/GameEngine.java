@@ -25,6 +25,7 @@ public class GameEngine extends JComponent implements KeyListener {
   private void generateElements(Graphics g) {
     Map.generateMatrix();
     Map.generateWalls();
+    Background.drawImage();
     hero.posX = 0;
     hero.posY = 0;
     hero.image = "src/main/resources/sprites/hero/hero-down-2.png";
@@ -106,11 +107,7 @@ public class GameEngine extends JComponent implements KeyListener {
 
   @Override
   public void paint(Graphics graphics) {
-    Map.drawBackGround(graphics);
-    for (GameObject wall : Wall.wallList) {
-      PositionedImage image = new PositionedImage(wall.image, wall.posX, wall.posY);
-      image.draw(graphics);
-    }
+    graphics.drawImage(Background.bImage, 0, 0, null);
     for (Character character : toDraw) {
       PositionedImage image = new PositionedImage(character.image, character.posX, character.posY);
       image.draw(graphics);

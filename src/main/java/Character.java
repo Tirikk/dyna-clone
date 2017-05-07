@@ -1,7 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Character extends GameObject {
   String direction;
 
-  void generateDirection() {
+  String generateDirection() {
     int i = (int) (Math.random() * 4);
     if (i == 0) {
       direction = "left";
@@ -12,6 +15,7 @@ public abstract class Character extends GameObject {
     } else {
       direction = "down";
     }
+    return direction;
   }
 
   private boolean checkDirection() {
@@ -27,14 +31,22 @@ public abstract class Character extends GameObject {
   }
 
   void move() {
+    boolean canMove = true;
+    List<String> directionsTried = new ArrayList<>();
     if (posX % 65 == 0 && posY % 65 == 0) {
       if ((int) (Math.random() * 4) == 0) {
         generateDirection();
       }
-      while (!checkDirection()) {
-        generateDirection();
+      while (!checkDirection() && canMove) {
+        directionsTried.add(generateDirection());
+        if (directionsTried.contains("left") && directionsTried.contains("right") && directionsTried.contains("up")
+                && directionsTried.contains("down")) {
+          canMove = false;
+        }
       }
-      moveInDirection();
+      if (canMove) {
+        moveInDirection();
+      }
     } else {
       moveInDirection();
     }
