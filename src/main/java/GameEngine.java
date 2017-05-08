@@ -14,6 +14,7 @@ public class GameEngine extends JComponent implements KeyListener {
   static ArrayList<GameObject> toDraw = new ArrayList<>();
   private ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
+  static boolean bombAlive = false;
 
   GameEngine() {
     setPreferredSize(new Dimension(715, 715));
@@ -24,7 +25,7 @@ public class GameEngine extends JComponent implements KeyListener {
 
   private void generateElements(Graphics g) {
     Map.generateMatrix();
-//    Map.generateWalls();
+    Map.generateWalls();
     Background.drawImage();
     hero.posX = 0;
     hero.posY = 0;
@@ -102,13 +103,16 @@ public class GameEngine extends JComponent implements KeyListener {
         keyPressed--;
       }
       hero.moving = false;
-    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
+    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive && !bombAlive) {
       if (hero.posX % 65 > 35 && hero.posY % 65 == 0) {
         toDraw.add(new Bomb(hero.posX / 65 + 1, hero.posY / 65));
+        bombAlive = true;
       } else if (hero.posY % 65 > 35 && hero.posX % 65 == 0) {
         toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65 + 1));
+        bombAlive = true;
       } else {
         toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65));
+        bombAlive = true;
       }
     }
   }
