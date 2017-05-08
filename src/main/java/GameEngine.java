@@ -5,7 +5,6 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine extends JComponent implements KeyListener {
@@ -46,13 +45,12 @@ public class GameEngine extends JComponent implements KeyListener {
         enemy.move();
       }
     };
-    final ScheduledFuture<?> moverHandle =
-            scheduler.scheduleAtFixedRate(mover, 30, 30, TimeUnit.MILLISECONDS);
+    scheduler.scheduleAtFixedRate(mover, 30, 30, TimeUnit.MILLISECONDS);
   }
 
   private void repaintCanvas() {
     final Runnable repainter = this::repaint;
-    final ScheduledFuture<?> repainterHandle = scheduler.scheduleAtFixedRate(repainter, 0, 30, TimeUnit
+    scheduler.scheduleAtFixedRate(repainter, 0, 30, TimeUnit
             .MILLISECONDS);
   }
 

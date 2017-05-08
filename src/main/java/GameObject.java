@@ -6,13 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 abstract class GameObject {
   private final ScheduledExecutorService scheduler1 = Executors.newScheduledThreadPool(0);
-  private final ScheduledExecutorService scheduler2 = Executors.newScheduledThreadPool(0);
   private final ScheduledExecutorService scheduler3 = Executors.newScheduledThreadPool(0);
-  ScheduledFuture<?> animHandle;
+  private ScheduledFuture<?> animHandle;
   int posX, posY;
   String image;
-  List<String> spritesMoving;
-  List<String> spritesDeath;
 
   void animate(List<String> spriteList, int delay, int interval, boolean withRotation, boolean
           repeating) {
@@ -32,7 +29,7 @@ abstract class GameObject {
     if (repeating) {
       animHandle = scheduler1.scheduleAtFixedRate(animator, delay, interval, TimeUnit.MILLISECONDS);
     } else {
-      scheduler2.schedule(animator, delay, TimeUnit.MILLISECONDS);
+      scheduler1.schedule(animator, delay, TimeUnit.MILLISECONDS);
     }
   }
 
