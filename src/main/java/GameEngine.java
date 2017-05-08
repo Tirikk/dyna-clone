@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class GameEngine extends JComponent implements KeyListener {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
   private Hero hero = new Hero();
-  static ArrayList<Character> toDraw = new ArrayList<>();
+  static ArrayList<GameObject> toDraw = new ArrayList<>();
   private ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
 
@@ -24,7 +24,7 @@ public class GameEngine extends JComponent implements KeyListener {
 
   private void generateElements(Graphics g) {
     Map.generateMatrix();
-    Map.generateWalls();
+//    Map.generateWalls();
     Background.drawImage();
     hero.posX = 0;
     hero.posY = 0;
@@ -102,8 +102,14 @@ public class GameEngine extends JComponent implements KeyListener {
         keyPressed--;
       }
       hero.moving = false;
-//    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
-//      hero.die();
+    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
+      if (hero.posX % 65 > 35 && hero.posY % 65 == 0) {
+        toDraw.add(new Bomb(hero.posX / 65 + 1, hero.posY / 65));
+      } else if (hero.posY % 65 > 35 && hero.posX % 65 == 0) {
+        toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65 + 1));
+      } else {
+        toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65));
+      }
     }
   }
 
@@ -115,8 +121,8 @@ public class GameEngine extends JComponent implements KeyListener {
         hero.die();
       }
     }
-    for (Character character : toDraw) {
-      PositionedImage image = new PositionedImage(character.image, character.posX, character.posY);
+    for (GameObject object : toDraw) {
+      PositionedImage image = new PositionedImage(object.image, object.posX, object.posY);
       image.draw(graphics);
     }
   }
