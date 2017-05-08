@@ -3,6 +3,7 @@ import java.util.List;
 
 public abstract class Character extends GameObject {
   String direction;
+  boolean alive;
 
   String generateDirection() {
     int i = (int) (Math.random() * 4);

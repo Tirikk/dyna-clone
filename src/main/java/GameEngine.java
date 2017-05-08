@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class GameEngine extends JComponent implements KeyListener {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
   private Hero hero = new Hero();
-  private ArrayList<Character> toDraw = new ArrayList<>();
+  static ArrayList<Character> toDraw = new ArrayList<>();
   private ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
 
@@ -61,19 +61,19 @@ public class GameEngine extends JComponent implements KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    if (e.getKeyCode() == KeyEvent.VK_DOWN && keyPressed < 1) {
+    if (e.getKeyCode() == KeyEvent.VK_DOWN && keyPressed < 1 && hero.alive) {
       keyPressed++;
       hero.moving = true;
       hero.moveHeroDown();
-    } else if (e.getKeyCode() == KeyEvent.VK_UP && keyPressed < 1) {
+    } else if (e.getKeyCode() == KeyEvent.VK_UP && keyPressed < 1 && hero.alive) {
       keyPressed++;
       hero.moving = true;
       hero.moveHeroUp();
-    } else if (e.getKeyCode() == KeyEvent.VK_LEFT && keyPressed < 1) {
+    } else if (e.getKeyCode() == KeyEvent.VK_LEFT && keyPressed < 1 && hero.alive) {
       keyPressed++;
       hero.moving = true;
       hero.moveHeroLeft();
-    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && keyPressed < 1) {
+    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && keyPressed < 1 && hero.alive) {
       keyPressed++;
       hero.moving = true;
       hero.moveHeroRight();
@@ -102,6 +102,8 @@ public class GameEngine extends JComponent implements KeyListener {
         keyPressed--;
       }
       hero.moving = false;
+    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
+      hero.die();
     }
   }
 

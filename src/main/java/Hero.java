@@ -9,6 +9,7 @@ public class Hero extends Character {
   private ScheduledFuture<?> moveUpHandle, moveDownHandle, moveLeftHandle, moveRightHandle;
   private ScheduledFuture<?> downAnim, upAnim, leftAnim, rightAnim;
   boolean moving;
+  boolean alive = true;
 
   void moveHeroUp() {
     final Runnable mover = () -> {
@@ -29,7 +30,7 @@ public class Hero extends Character {
           posY--;
         }
       }
-      if (!moving) {
+      if (!moving || !alive) {
         moveUpHandle.cancel(true);
         upAnim.cancel(true);
         image = "src/main/resources/sprites/hero/hero-up-2.png";
@@ -71,7 +72,7 @@ public class Hero extends Character {
           posY++;
         }
       }
-      if (!moving) {
+      if (!moving || !alive) {
         moveDownHandle.cancel(true);
         downAnim.cancel(true);
         image = "src/main/resources/sprites/hero/hero-down-2.png";
@@ -113,7 +114,7 @@ public class Hero extends Character {
           posX--;
         }
       }
-      if (!moving) {
+      if (!moving || !alive) {
         moveLeftHandle.cancel(true);
         leftAnim.cancel(true);
         image = "src/main/resources/sprites/hero/hero-left-2.png";
@@ -155,7 +156,7 @@ public class Hero extends Character {
           posX++;
         }
       }
-      if (!moving) {
+      if (!moving || !alive) {
         moveRightHandle.cancel(true);
         rightAnim.cancel(true);
         image = "src/main/resources/sprites/hero/hero-right-2.png";
@@ -176,5 +177,36 @@ public class Hero extends Character {
     };
     moveRightHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
     rightAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
+  }
+
+  void die() {
+    alive = false;
+    final Runnable animator = () -> {
+      try {
+        image = "src/main/resources/sprites/hero/hero-dead-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-1.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-2.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-3.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-4.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-5.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-6.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-7.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        image = "src/main/resources/sprites/hero/hero-dead-8.png";
+        TimeUnit.MILLISECONDS.sleep(300);
+        GameEngine.toDraw.remove(GameEngine.toDraw.size() - 1);
+      } catch (InterruptedException e) {
+      }
+    };
+    animScheduler.schedule(animator, 0, TimeUnit.MILLISECONDS);
   }
 }
