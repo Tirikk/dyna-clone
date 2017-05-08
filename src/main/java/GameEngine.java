@@ -102,14 +102,19 @@ public class GameEngine extends JComponent implements KeyListener {
         keyPressed--;
       }
       hero.moving = false;
-    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
-      hero.die();
+//    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive) {
+//      hero.die();
     }
   }
 
   @Override
   public void paint(Graphics graphics) {
     graphics.drawImage(Background.bImage, 0, 0, null);
+    for (GameObject enemy : enemyList) {
+      if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive) {
+        hero.die();
+      }
+    }
     for (Character character : toDraw) {
       PositionedImage image = new PositionedImage(character.image, character.posX, character.posY);
       image.draw(graphics);
