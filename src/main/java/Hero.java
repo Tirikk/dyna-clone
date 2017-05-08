@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 class Hero extends Character {
-  private final ScheduledExecutorService moveScheduler = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
   private ScheduledFuture<?> moveUpHandle, moveDownHandle, moveLeftHandle, moveRightHandle;
   private String path = "src/main/resources/sprites/hero/hero-";
   private List<String> spritesMovingUp = new ArrayList<>();
@@ -15,9 +15,9 @@ class Hero extends Character {
   private List<String> spritesMovingRight = new ArrayList<>();
   private List<String> spritesDeath = new ArrayList<>();
   boolean moving;
-  boolean alive = true;
 
   Hero() {
+    alive = true;
     for (int i = 1; i < 9; i++) {
       if(i < 4) {
         spritesMovingUp.add(path.concat("up-" + i + ".png"));
@@ -55,7 +55,7 @@ class Hero extends Character {
       }
     };
     animate(spritesMovingUp, 0, 300, true, true);
-    moveUpHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    moveUpHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroDown() {
@@ -84,7 +84,7 @@ class Hero extends Character {
       }
     };
     animate(spritesMovingDown, 0, 300, true, true);
-    moveDownHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    moveDownHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroLeft() {
@@ -113,7 +113,7 @@ class Hero extends Character {
       }
     };
     animate(spritesMovingLeft, 0, 300, true, true);
-    moveLeftHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    moveLeftHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroRight() {
@@ -142,34 +142,15 @@ class Hero extends Character {
       }
     };
     animate(spritesMovingRight, 0, 300, true, true);
-    moveRightHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
+    moveRightHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void die() {
+    final Runnable remover = () -> {
+      GameEngine.characters.remove(GameEngine.characters.size() - 1);
+    };
     alive = false;
-//    final Runnable animator = () -> {
-//      try {
-//        image = "src/main/resources/sprites/hero/hero-dead-1.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-2.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-3.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-4.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-5.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-6.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-7.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        image = "src/main/resources/sprites/hero/hero-dead-8.png";
-//        TimeUnit.MILLISECONDS.sleep(300);
-//        GameEngine.toDraw.remove(GameEngine.toDraw.size() - 1);
-//      } catch (InterruptedException e) {
-//      }
-//    };
-//    animScheduler.schedule(animator, 0, TimeUnit.MILLISECONDS);
     animate(spritesDeath, 0, 300, false, false);
+    scheduler.schedule(remover, spritesDeath.size() * 300, TimeUnit.MILLISECONDS);
   }
 }

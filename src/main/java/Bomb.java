@@ -1,20 +1,22 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Bomb extends GameObject {
-  List<String> spritesMoving = new ArrayList<>(Arrays.asList(
-          "src/main/resources/sprites/bomb/bomb-0.png",
-          "src/main/resources/sprites/bomb/bomb-1.png",
-          "src/main/resources/sprites/bomb/bomb-2.png"));
-  List<String> spritesDeath = new ArrayList<>(Arrays.asList(
-          "src/main/resources/sprites/bomb/detonate-1.png",
-          "src/main/resources/sprites/bomb/detonate-2.png",
-          "src/main/resources/sprites/bomb/detonate-3.png",
-          "src/main/resources/sprites/bomb/detonate-4.png",
-          "src/main/resources/sprites/bomb/detonate-5.png"));
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  private String path = "src/main/resources/sprites/bomb/bomb-";
+  private List<String> spritesMoving = new ArrayList<>();
+  private List<String> spritesDeath = new ArrayList<>();
 
   Bomb(int x, int y) {
+    for (int i = 1; i < 6; i++) {
+      if (i < 4) {
+        spritesMoving.add(path.concat(i + ".png"));
+      }
+      spritesDeath.add(path.concat("detonate-" + i + ".png"));
+    }
     image = spritesMoving.get(1);
     posX = x * 65;
     posY = y * 65;
@@ -25,26 +27,11 @@ public class Bomb extends GameObject {
   }
 
   private void detonate() {
-    animate(spritesDeath, 4000, 200, false, false);
-    //    final Runnable detonator = () -> {
-    //      try {
-    //        animHandle.cancel(true);
-    //        image = "src/main/resources/sprites/bomb/detonate-1.png";
-    //        TimeUnit.MILLISECONDS.sleep(200);
-    //        image = "src/main/resources/sprites/bomb/detonate-2.png";
-    //        TimeUnit.MILLISECONDS.sleep(200);
-    //        image = "src/main/resources/sprites/bomb/detonate-3.png";
-    //        TimeUnit.MILLISECONDS.sleep(200);
-    //        image = "src/main/resources/sprites/bomb/detonate-4.png";
-    //        TimeUnit.MILLISECONDS.sleep(200);
-    //        image = "src/main/resources/sprites/bomb/detonate-5.png";
-    //        TimeUnit.MILLISECONDS.sleep(200);
-    //        Map.mapMatrix[posY / 65][posX / 65] = 0;
-    //        GameEngine.bombAlive = false;
-    //        GameEngine.toDraw.remove(GameEngine.toDraw.size() - 1);
-    //      } catch (InterruptedException e) {
-    //      }
-    //    };
-    //    detonateScheduler.schedule(detonator, 3, TimeUnit.SECONDS);
+    final Runnable detonator = () -> {
+      GameEngine.bombs.remove(0);
+      Map.mapMatrix[posY / 65][posX / 65] = 0;
+    };
+    animate(spritesDeath, 4000, 100, false, false);
+    scheduler.schedule(detonator, 4000 + spritesDeath.size() * 100, TimeUnit.MILLISECONDS);
   }
 }

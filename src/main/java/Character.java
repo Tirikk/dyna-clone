@@ -55,29 +55,13 @@ public abstract class Character extends GameObject {
 
   private void moveInDirection() {
     if (direction.equals("left")) {
-      moveLeft();
+      posX--;
     } else if (direction.equals("right")) {
-      moveRight();
+      posX++;
     } else if (direction.equals("up")) {
-      moveUp();
+      posY--;
     } else {
-      moveDown();
+      posY++;
     }
-  }
-
-  private void moveLeft() {
-    posX--;
-  }
-
-  private void moveRight() {
-    posX++;
-  }
-
-  private void moveUp() {
-    posY--;
-  }
-
-  private void moveDown() {
-    posY++;
   }
 }
