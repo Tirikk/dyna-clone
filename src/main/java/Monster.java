@@ -23,7 +23,7 @@ public class Monster extends Character {
     monsterList.clear();
     int i = 0;
     while (i < n) {
-      int column = (int) (Math.random() * 11);
+      int column = (int) (Math.random() * 20);
       int row = (int) (Math.random() * 11);
       if (column != 0 | row != 0) {
         if (Map.isFloor(column, row)) {

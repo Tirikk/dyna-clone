@@ -12,9 +12,12 @@ public class GameEngine extends JComponent implements KeyListener {
   private Hero hero = new Hero();
   static ArrayList<GameObject> characters = new ArrayList<>();
   static ArrayList<GameObject> bombs = new ArrayList<>();
+
+  static int offsetX = 0;
+
   private ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
-//  static boolean bombAlive = false;
+  //  static boolean bombAlive = false;
 
   GameEngine() {
     setPreferredSize(new Dimension(715, 715));
@@ -30,7 +33,7 @@ public class GameEngine extends JComponent implements KeyListener {
     hero.posX = 0;
     hero.posY = 0;
     hero.image = "src/main/resources/sprites/hero/hero-down-2.png";
-    Monster.generateMonsters(3);
+    Monster.generateMonsters(6);
     for (Monster monster : Monster.monsterList) {
       characters.add(monster);
       enemyList.add(monster);
@@ -115,6 +118,7 @@ public class GameEngine extends JComponent implements KeyListener {
 
   @Override
   public void paint(Graphics graphics) {
+    graphics.translate(offsetX, 0);
     graphics.drawImage(Background.bImage, 0, 0, null);
     for (GameObject enemy : enemyList) {
       if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive) {

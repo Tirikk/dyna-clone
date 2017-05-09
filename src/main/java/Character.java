@@ -23,7 +23,7 @@ public abstract class Character extends GameObject {
     if (direction.equals("left")) {
       return (posX >= 65 && Map.isFloor(posX / 65 - 1, posY / 65));
     } else if (direction.equals("right")) {
-      return (posX < 650 && Map.isFloor(posX / 65 + 1, posY / 65));
+      return (posX < 1235 && Map.isFloor(posX / 65 + 1, posY / 65));
     } else if (direction.equals("up")) {
       return (posY >= 65 && Map.isFloor(posX / 65, posY / 65 - 1));
     } else {
