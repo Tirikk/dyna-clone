@@ -32,7 +32,7 @@ abstract class GameObject {
       animHandle = scheduler1.scheduleAtFixedRate(animator, delay, interval, TimeUnit.MILLISECONDS);
       futures.add(animHandle);
     } else {
-      futures.add(scheduler1.schedule(animator, delay, TimeUnit.MILLISECONDS));
+      scheduler1.schedule(animator, delay, TimeUnit.MILLISECONDS);
     }
   }
 
@@ -41,6 +41,7 @@ abstract class GameObject {
       for (ScheduledFuture future : futures) {
         future.cancel(true);
       }
+      animHandle.cancel(true);
     };
     scheduler3.schedule(canceler, delay, TimeUnit.MILLISECONDS);
   }

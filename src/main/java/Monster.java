@@ -4,15 +4,14 @@ import java.util.List;
 public class Monster extends Character {
   static ArrayList<Monster> monsterList = new ArrayList<>();
   private String path = "src/main/resources/sprites/monster/monster-";
-  private List<String> spritesMoving = new ArrayList<>();
-//  private List<String> spritesDeath = new ArrayList<>();
 
   Monster() {
+    alive = true;
     for (int i = 1; i < 6; i++) {
       if (i < 4) {
         spritesMoving.add(path.concat(i + ".png"));
       }
-//      spritesDeath.add(path.concat("detonate-" + i + ".png"));
+      spritesDeath.add(path.concat("dead-" + i + ".png"));
     }
     image = spritesMoving.get(1);
     direction = "null";

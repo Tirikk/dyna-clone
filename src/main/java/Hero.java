@@ -13,7 +13,6 @@ class Hero extends Character {
   private List<String> spritesMovingDown = new ArrayList<>();
   private List<String> spritesMovingLeft = new ArrayList<>();
   private List<String> spritesMovingRight = new ArrayList<>();
-  private List<String> spritesDeath = new ArrayList<>();
   boolean moving;
 
   Hero() {
@@ -167,15 +166,5 @@ class Hero extends Character {
     };
     animate(spritesMovingRight, 0, 300, true, true);
     moveRightHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
-  }
-
-  void die() {
-    final Runnable remover = () -> {
-      GameEngine.characters.remove(GameEngine.characters.size() - 1);
-    };
-//    cancelAnim(0);
-    alive = false;
-    animate(spritesDeath, 0, 300, false, false);
-    scheduler.schedule(remover, spritesDeath.size() * 300, TimeUnit.MILLISECONDS);
   }
 }

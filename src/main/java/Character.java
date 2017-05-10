@@ -1,9 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Character extends GameObject {
+  final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
   String direction;
   boolean alive;
+  List<String> spritesMoving = new ArrayList<>();
+  List<String> spritesDeath = new ArrayList<>();
 
   String generateDirection() {
     int i = (int) (Math.random() * 4);
@@ -32,24 +38,26 @@ public abstract class Character extends GameObject {
   }
 
   void move() {
-    boolean canMove = true;
-    List<String> directionsTried = new ArrayList<>();
-    if (posX % 65 == 0 && posY % 65 == 0) {
-      if ((int) (Math.random() * 4) == 0) {
-        generateDirection();
-      }
-      while (!checkDirection() && canMove) {
-        directionsTried.add(generateDirection());
-        if (directionsTried.contains("left") && directionsTried.contains("right") && directionsTried.contains("up")
-                && directionsTried.contains("down")) {
-          canMove = false;
+    if (alive) {
+      boolean canMove = true;
+      List<String> directionsTried = new ArrayList<>();
+      if (posX % 65 == 0 && posY % 65 == 0) {
+        if ((int) (Math.random() * 4) == 0) {
+          generateDirection();
         }
-      }
-      if (canMove) {
+        while (!checkDirection() && canMove) {
+          directionsTried.add(generateDirection());
+          if (directionsTried.contains("left") && directionsTried.contains("right") && directionsTried.contains("up")
+                  && directionsTried.contains("down")) {
+            canMove = false;
+          }
+        }
+        if (canMove) {
+          moveInDirection();
+        }
+      } else {
         moveInDirection();
       }
-    } else {
-      moveInDirection();
     }
   }
 
@@ -63,5 +71,18 @@ public abstract class Character extends GameObject {
     } else {
       posY++;
     }
+  }
+
+  void die() {
+    final Runnable remover = () -> {
+      GameEngine.characters.remove(GameEngine.characters.get(GameEngine.getCharacterIndex(posX, posY)));
+      if (getClass().equals(Monster.class)) {
+        GameEngine.enemyList.remove(GameEngine.enemyList.get(GameEngine.getEnemyIndex(posX, posY)));
+      }
+    };
+    cancelAnim(0);
+    alive = false;
+    animate(spritesDeath, 0, 300, false, false);
+    scheduler.schedule(remover, spritesDeath.size() * 300, TimeUnit.MILLISECONDS);
   }
 }
