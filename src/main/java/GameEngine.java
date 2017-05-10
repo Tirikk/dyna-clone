@@ -142,7 +142,7 @@ public class GameEngine extends JComponent implements KeyListener {
     graphics.translate(offsetX, 0);
     graphics.drawImage(Background.bImage, 0, 0, null);
     for (Character enemy : enemyList) {
-      if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive) {
+      if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive && enemy.alive) {
         hero.die();
       }
     }

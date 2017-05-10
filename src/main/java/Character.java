@@ -75,9 +75,9 @@ public abstract class Character extends GameObject {
 
   void die() {
     final Runnable remover = () -> {
-      GameEngine.characters.remove(GameEngine.characters.get(GameEngine.getCharacterIndex(posX, posY)));
+      GameEngine.characters.remove(GameEngine.getCharacterIndex(posX, posY));
       if (getClass().equals(Monster.class)) {
-        GameEngine.enemyList.remove(GameEngine.enemyList.get(GameEngine.getEnemyIndex(posX, posY)));
+        GameEngine.enemyList.remove(GameEngine.getEnemyIndex(posX, posY));
       }
     };
     cancelAnim(0);
