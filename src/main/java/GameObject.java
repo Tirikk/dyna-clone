@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -8,6 +9,7 @@ abstract class GameObject {
   private final ScheduledExecutorService scheduler1 = Executors.newScheduledThreadPool(0);
   private final ScheduledExecutorService scheduler3 = Executors.newScheduledThreadPool(0);
   private ScheduledFuture<?> animHandle;
+  List<ScheduledFuture> futures = new ArrayList<>();
   int posX, posY;
   String image;
 
@@ -28,14 +30,17 @@ abstract class GameObject {
     };
     if (repeating) {
       animHandle = scheduler1.scheduleAtFixedRate(animator, delay, interval, TimeUnit.MILLISECONDS);
+      futures.add(animHandle);
     } else {
-      scheduler1.schedule(animator, delay, TimeUnit.MILLISECONDS);
+      futures.add(scheduler1.schedule(animator, delay, TimeUnit.MILLISECONDS));
     }
   }
 
   void cancelAnim(int delay) {
     final Runnable canceler = () -> {
-      animHandle.cancel(true);
+      for (ScheduledFuture future : futures) {
+        future.cancel(true);
+      }
     };
     scheduler3.schedule(canceler, delay, TimeUnit.MILLISECONDS);
   }

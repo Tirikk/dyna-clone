@@ -38,10 +38,16 @@ class Hero extends Character {
           }
         } else if (posY % 65 == 0 && posX % 65 < 25) {
           if (Map.isFloor(posX / 65, posY / 65 - 1)) {
+            if (posX > 325 && posX < 910) {
+              GameEngine.offsetX += 1;
+            }
             posX--;
           }
         } else if (posY % 65 == 0 && posX % 65 > 40) {
           if (Map.isFloor(posX / 65 + 1, posY / 65 - 1)) {
+            if (posX > 325 && posX < 910) {
+              GameEngine.offsetX -= 1;
+            }
             posX++;
           }
         } else if (posX % 65 == 0) {
@@ -67,10 +73,16 @@ class Hero extends Character {
           }
         } else if (posY % 65 == 0 && posX % 65 < 25) {
           if (Map.isFloor(posX / 65, posY / 65 + 1)) {
+            if (posX > 325 && posX < 910) {
+              GameEngine.offsetX += 1;
+            }
             posX--;
           }
         } else if (posY % 65 == 0 && posX % 65 > 40) {
           if (Map.isFloor(posX / 65 + 1, posY / 65 + 1)) {
+            if (posX > 325 && posX < 910) {
+              GameEngine.offsetX -= 1;
+            }
             posX++;
           }
         } else if (posX % 65 == 0) {
@@ -161,7 +173,7 @@ class Hero extends Character {
     final Runnable remover = () -> {
       GameEngine.characters.remove(GameEngine.characters.size() - 1);
     };
-    cancelAnim(0);
+//    cancelAnim(0);
     alive = false;
     animate(spritesDeath, 0, 300, false, false);
     scheduler.schedule(remover, spritesDeath.size() * 300, TimeUnit.MILLISECONDS);

@@ -13,7 +13,7 @@ public class Map {
       for (int row = 0; row < 20; row++) {
         if (column % 2 != 0 && row % 2 != 0) {
           mapMatrix[column][row] = 1;
-        } else if ((int) (Math.random() * 5) == 1) {
+        } else if ((int) (Math.random() * 10) == 1) {
           mapMatrix[column][row] = 2;
         } else {
           mapMatrix[column][row] = 0;
@@ -37,5 +37,9 @@ public class Map {
 
   static boolean isFloor(int column, int row) {
     return mapMatrix[row][column] == 0;
+  }
+
+  static boolean isWall(int column, int row) {
+    return mapMatrix[row][column] == 2;
   }
 }

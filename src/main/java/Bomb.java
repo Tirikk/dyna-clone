@@ -31,7 +31,11 @@ public class Bomb extends GameObject {
       GameEngine.bombs.remove(0);
       Map.mapMatrix[posY / 65][posX / 65] = 0;
     };
+    final Runnable blaster = () -> {
+      GameEngine.blasts.add(new BlastRadius(posX, posY));
+    };
     animate(spritesDeath, 4000, 100, false, false);
     scheduler.schedule(detonator, 4000 + spritesDeath.size() * 100, TimeUnit.MILLISECONDS);
+    scheduler.schedule(blaster, 4000, TimeUnit.MILLISECONDS);
   }
 }

@@ -12,12 +12,12 @@ public class GameEngine extends JComponent implements KeyListener {
   private Hero hero = new Hero();
   static ArrayList<GameObject> characters = new ArrayList<>();
   static ArrayList<GameObject> bombs = new ArrayList<>();
+  static ArrayList<BlastRadius> blasts = new ArrayList<>();
 
   static int offsetX = 0;
 
   private ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
-  //  static boolean bombAlive = false;
 
   GameEngine() {
     setPreferredSize(new Dimension(715, 715));
@@ -29,11 +29,12 @@ public class GameEngine extends JComponent implements KeyListener {
   private void generateElements(Graphics g) {
     Map.generateMatrix();
     Map.generateWalls();
-    Background.drawImage();
+    Background.drawBackground();
+    Background.drawWalls();
     hero.posX = 0;
     hero.posY = 0;
     hero.image = "src/main/resources/sprites/hero/hero-down-2.png";
-    Monster.generateMonsters(6);
+    Monster.generateMonsters(3);
     for (Monster monster : Monster.monsterList) {
       characters.add(monster);
       enemyList.add(monster);
@@ -128,6 +129,12 @@ public class GameEngine extends JComponent implements KeyListener {
     for (GameObject bomb : bombs) {
       PositionedImage image = new PositionedImage(bomb.image, bomb.posX, bomb.posY);
       image.draw(graphics);
+    }
+    for (BlastRadius blastRadius : blasts) {
+      for (GameObject blast : blastRadius.radius) {
+        PositionedImage image = new PositionedImage(blast.image, blast.posX, blast.posY);
+        image.draw(graphics);
+      }
     }
     for (GameObject object : characters) {
       PositionedImage image = new PositionedImage(object.image, object.posX, object.posY);
