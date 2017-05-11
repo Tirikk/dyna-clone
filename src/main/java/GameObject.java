@@ -6,8 +6,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 abstract class GameObject {
-  private final ScheduledExecutorService scheduler1 = Executors.newScheduledThreadPool(0);
-  private final ScheduledExecutorService scheduler3 = Executors.newScheduledThreadPool(0);
+  private final ScheduledExecutorService scheduler1 = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService scheduler3 = Executors.newScheduledThreadPool(1);
   private ScheduledFuture<?> animHandle;
   List<ScheduledFuture> futures = new ArrayList<>();
   int posX, posY;

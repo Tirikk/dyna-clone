@@ -5,7 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Character extends GameObject {
-  final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   String direction;
   boolean alive;
   List<String> spritesMoving = new ArrayList<>();
