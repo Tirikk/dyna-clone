@@ -5,7 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bomb extends GameObject {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   private String path = "src/main/resources/sprites/bomb/bomb-";
   private List<String> spritesMoving = new ArrayList<>();
   private List<String> spritesDeath = new ArrayList<>();

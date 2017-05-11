@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine extends JComponent implements KeyListener {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   private Hero hero = new Hero();
   static ArrayList<Character> characters = new ArrayList<>();
   static ArrayList<GameObject> bombs = new ArrayList<>();
@@ -114,6 +114,8 @@ public class GameEngine extends JComponent implements KeyListener {
       } else {
         bombs.add(new Bomb(hero.posX / 65, hero.posY / 65));
       }
+    } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+      System.exit(0);
     }
   }
 

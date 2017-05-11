@@ -7,8 +7,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Wall extends GameObject {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   static List<Wall> wallList = new ArrayList<>();
+  boolean destroyed;
   public static List<String> spritesDeath = Arrays.asList(
           "src/main/resources/sprites/map/wall-blown-1.png",
           "src/main/resources/sprites/map/wall-blown-2.png",
@@ -19,6 +20,7 @@ public class Wall extends GameObject {
           "src/main/resources/sprites/map/wall-blown-7.png");
 
   Wall(int x, int y) {
+    destroyed = false;
     image = "src/main/resources/sprites/map/wall.png";
     posX = x;
     posY = y;
@@ -35,6 +37,7 @@ public class Wall extends GameObject {
   }
 
   public void destroyWall() {
+    destroyed = true;
     PositionedImage picture = new PositionedImage("src/main/resources/sprites/map/grass.png", posX, posY);
     Graphics2D g2d = Background.bImage.createGraphics();
     final Runnable changer = () -> {
