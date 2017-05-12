@@ -27,13 +27,13 @@ public abstract class Character extends GameObject {
 
   private boolean checkDirection() {
     if (direction.equals("left")) {
-      return (posX >= 65 && Map.isFloor(posX / 65 - 1, posY / 65));
+      return (posX >= Map.tileSize && Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize));
     } else if (direction.equals("right")) {
-      return (posX < 1235 && Map.isFloor(posX / 65 + 1, posY / 65));
+      return (posX < (Map.width - 1 ) * Map.tileSize && Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize));
     } else if (direction.equals("up")) {
-      return (posY >= 65 && Map.isFloor(posX / 65, posY / 65 - 1));
+      return (posY >= Map.tileSize && Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - 1));
     } else {
-      return (posY < 650 && Map.isFloor(posX / 65, posY / 65 + 1));
+      return (posY < (Map.height - 1) * Map.tileSize && Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + 1));
     }
   }
 
@@ -41,7 +41,7 @@ public abstract class Character extends GameObject {
     if (alive) {
       boolean canMove = true;
       List<String> directionsTried = new ArrayList<>();
-      if (posX % 65 == 0 && posY % 65 == 0) {
+      if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
         if ((int) (Math.random() * 4) == 0) {
           generateDirection();
         }

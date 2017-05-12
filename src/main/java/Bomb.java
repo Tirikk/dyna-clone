@@ -18,8 +18,8 @@ public class Bomb extends GameObject {
       spritesDeath.add(path.concat("detonate-" + i + ".png"));
     }
     image = spritesMoving.get(1);
-    posX = x * 65;
-    posY = y * 65;
+    posX = x * Map.tileSize;
+    posY = y * Map.tileSize;
     Map.mapMatrix[y][x] = 3;
     animate(spritesMoving, 450, 450, true, true);
     cancelAnim(4000);
@@ -29,7 +29,7 @@ public class Bomb extends GameObject {
   private void detonate() {
     final Runnable detonator = () -> {
       GameEngine.bombs.remove(0);
-      Map.mapMatrix[posY / 65][posX / 65] = 0;
+      Map.mapMatrix[posY / Map.tileSize][posX / Map.tileSize] = 0;
     };
     final Runnable blaster = () -> {
       GameEngine.blasts.add(new BlastRadius(posX, posY));

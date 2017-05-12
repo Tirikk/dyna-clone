@@ -20,10 +20,10 @@ public class BlastRadius {
   void populateRadius() {
     for (int i = range; i > 0; i--) {
       try {
-        if (Map.isFloor(posX / 65 - i, posY / 65) && unblockedWall(posX - i * 65, posY)) {
-          radius.add(new Blast(posX - i * 65, posY, "left", i < range));
-        } else if (Map.isWall(posX / 65 - i, posY / 65) && unblockedWall(posX - i * 65, posY)) {
-          Wall blown = Wall.getWall(posX - i * 65, posY);
+        if (Map.isFloor(posX / Map.tileSize - i, posY / Map.tileSize) && unblockedWall(posX - i * Map.tileSize, posY)) {
+          radius.add(new Blast(posX - i * Map.tileSize, posY, "left", i < range));
+        } else if (Map.isWall(posX / Map.tileSize - i, posY / Map.tileSize) && unblockedWall(posX - i * Map.tileSize, posY)) {
+          Wall blown = Wall.getWall(posX - i * Map.tileSize, posY);
           if (!blown.destroyed) {
             blown.animate(Wall.spritesDeath, 0, 100, false, false);
             blown.destroyWall();
@@ -32,10 +32,10 @@ public class BlastRadius {
       } catch (IndexOutOfBoundsException e) {
       }
       try {
-        if (Map.isFloor(posX / 65, posY / 65 - i) && unblockedWall(posX, posY - i * 65)) {
-          radius.add(new Blast(posX, posY - i * 65, "up", i < range));
-        } else if (Map.isWall(posX / 65, posY / 65 - i) && unblockedWall(posX, posY - i * 65)) {
-          Wall blown = Wall.getWall(posX, posY - i * 65);
+        if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - i) && unblockedWall(posX, posY - i * Map.tileSize)) {
+          radius.add(new Blast(posX, posY - i * Map.tileSize, "up", i < range));
+        } else if (Map.isWall(posX / Map.tileSize, posY / Map.tileSize - i) && unblockedWall(posX, posY - i * Map.tileSize)) {
+          Wall blown = Wall.getWall(posX, posY - i * Map.tileSize);
           if (!blown.destroyed) {
             blown.animate(Wall.spritesDeath, 0, 100, false, false);
             blown.destroyWall();
@@ -44,10 +44,10 @@ public class BlastRadius {
       } catch (IndexOutOfBoundsException e) {
       }
       try {
-        if (Map.isFloor(posX / 65 + i, posY / 65) && unblockedWall(posX + i * 65, posY)) {
-          radius.add(new Blast(posX + i * 65, posY, "right", i < range));
-        } else if (Map.isWall(posX / 65 + i, posY / 65) && unblockedWall(posX + i * 65, posY)) {
-          Wall blown = Wall.getWall(posX + i * 65, posY);
+        if (Map.isFloor(posX / Map.tileSize + i, posY / Map.tileSize) && unblockedWall(posX + i * Map.tileSize, posY)) {
+          radius.add(new Blast(posX + i * Map.tileSize, posY, "right", i < range));
+        } else if (Map.isWall(posX / Map.tileSize + i, posY / Map.tileSize) && unblockedWall(posX + i * Map.tileSize, posY)) {
+          Wall blown = Wall.getWall(posX + i * Map.tileSize, posY);
           if (!blown.destroyed) {
             blown.animate(Wall.spritesDeath, 0, 100, false, false);
             blown.destroyWall();
@@ -56,10 +56,10 @@ public class BlastRadius {
       } catch (IndexOutOfBoundsException e) {
       }
       try {
-        if (Map.isFloor(posX / 65, posY / 65 + i) && unblockedWall(posX, posY + i * 65)) {
-          radius.add(new Blast(posX, posY + i * 65, "down", i < range));
-        } else if (Map.isWall(posX / 65, posY / 65 + i) && unblockedWall(posX, posY + i * 65)) {
-          Wall blown = Wall.getWall(posX, posY + i * 65);
+        if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + i) && unblockedWall(posX, posY + i * Map.tileSize)) {
+          radius.add(new Blast(posX, posY + i * Map.tileSize, "down", i < range));
+        } else if (Map.isWall(posX / Map.tileSize, posY / Map.tileSize + i) && unblockedWall(posX, posY + i * Map.tileSize)) {
+          Wall blown = Wall.getWall(posX, posY + i * Map.tileSize);
           if (!blown.destroyed) {
             blown.animate(Wall.spritesDeath, 0, 100, false, false);
             blown.destroyWall();
@@ -84,8 +84,8 @@ public class BlastRadius {
     boolean unblocked = true;
     try {
       if (posY != y) {
-        for (int i = 1; i < Math.abs(posY - y) / 65; i++) {
-          if (!Map.isFloor(posX / 65, posY / 65 - (posY - y) / Math.abs(posY - y) * i)) {
+        for (int i = 1; i < Math.abs(posY - y) / Map.tileSize; i++) {
+          if (!Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - (posY - y) / Math.abs(posY - y) * i)) {
             unblocked = false;
           }
         }
@@ -94,8 +94,8 @@ public class BlastRadius {
     }
     try {
       if (posX != x) {
-        for (int i = 1; i < Math.abs(posX - x) / 65; i++) {
-          if (!Map.isFloor(posX / 65 - (posX - x) / Math.abs(posX - x) * i, posY / 65)) {
+        for (int i = 1; i < Math.abs(posX - x) / Map.tileSize; i++) {
+          if (!Map.isFloor(posX / Map.tileSize - (posX - x) / Math.abs(posX - x) * i, posY / Map.tileSize)) {
             unblocked = false;
           }
         }

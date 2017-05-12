@@ -31,25 +31,25 @@ class Hero extends Character {
   void moveHeroUp() {
     final Runnable mover = () -> {
       if (posY > 0) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65, posY / 65 - 1)) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - 1)) {
             posY--;
           }
-        } else if (posY % 65 == 0 && posX % 65 < 25) {
-          if (Map.isFloor(posX / 65, posY / 65 - 1)) {
-            if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX += 1;
             }
             posX--;
           }
-        } else if (posY % 65 == 0 && posX % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 - 1)) {
-            if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize - 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX -= 1;
             }
             posX++;
           }
-        } else if (posX % 65 == 0) {
+        } else if (posX % Map.tileSize == 0) {
           posY--;
         }
       }
@@ -65,26 +65,26 @@ class Hero extends Character {
 
   void moveHeroDown() {
     final Runnable mover = () -> {
-      if (posY < 650) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65, posY / 65 + 1)) {
+      if (posY < (Map.height - 1) * Map.tileSize) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0 && posX % 65 < 25) {
-          if (Map.isFloor(posX / 65, posY / 65 + 1)) {
-            if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX += 1;
             }
             posX--;
           }
-        } else if (posY % 65 == 0 && posX % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 + 1)) {
-            if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize + 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX -= 1;
             }
             posX++;
           }
-        } else if (posX % 65 == 0) {
+        } else if (posX % Map.tileSize == 0) {
           posY++;
         }
       }
@@ -101,23 +101,23 @@ class Hero extends Character {
   void moveHeroLeft() {
     final Runnable mover = () -> {
       if (posX > 0) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65)) {
-            if (posX > 325 && posX < 910) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX += 1;
             }
             posX--;
           }
-        } else if (posX % 65 == 0 && posY % 65 < 25) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize)) {
             posY--;
           }
-        } else if (posX % 65 == 0 && posY % 65 > 40) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65 + 1)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0) {
-          if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0) {
+          if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
             GameEngine.offsetX += 1;
           }
           posX--;
@@ -135,24 +135,24 @@ class Hero extends Character {
 
   void moveHeroRight() {
     final Runnable mover = () -> {
-      if (posX < 1235) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65)) {
-            if (posX > 325 && posX < 910) {
+      if (posX < (Map.width - 1) * Map.tileSize) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
               GameEngine.offsetX -= 1;
             }
             posX++;
           }
-        } else if (posX % 65 == 0 && posY % 65 < 25) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize)) {
             posY--;
           }
-        } else if (posX % 65 == 0 && posY % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 + 1)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0) {
-          if (posX > 325 && posX < 910) {
+        } else if (posY % Map.tileSize == 0) {
+          if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
             GameEngine.offsetX -= 1;
           }
           posX++;

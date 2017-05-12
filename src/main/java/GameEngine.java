@@ -23,10 +23,10 @@ public class GameEngine extends JComponent implements KeyListener {
     setPreferredSize(new Dimension(715, 715));
     setVisible(true);
     setOpaque(false);
-    generateElements(getGraphics());
+    generateElements();
   }
 
-  private void generateElements(Graphics g) {
+  private void generateElements() {
     Map.generateMatrix();
     Map.generateWalls();
     Background.drawBackground();
@@ -34,7 +34,7 @@ public class GameEngine extends JComponent implements KeyListener {
     hero.posX = 0;
     hero.posY = 0;
     hero.image = "src/main/resources/sprites/hero/hero-down-2.png";
-    Monster.generateMonsters(3);
+    Monster.generateMonsters(4);
     for (Monster monster : Monster.monsterList) {
       characters.add(monster);
       enemyList.add(monster);
@@ -107,12 +107,12 @@ public class GameEngine extends JComponent implements KeyListener {
       }
       hero.moving = false;
     } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive && bombs.size() < 1) {
-      if (hero.posX % 65 > 35 && hero.posY % 65 == 0) {
-        bombs.add(new Bomb(hero.posX / 65 + 1, hero.posY / 65));
-      } else if (hero.posY % 65 > 35 && hero.posX % 65 == 0) {
-        bombs.add(new Bomb(hero.posX / 65, hero.posY / 65 + 1));
+      if (hero.posX % Map.tileSize > 35 && hero.posY % Map.tileSize == 0) {
+        bombs.add(new Bomb(hero.posX / Map.tileSize + 1, hero.posY / Map.tileSize));
+      } else if (hero.posY % Map.tileSize > 35 && hero.posX % Map.tileSize == 0) {
+        bombs.add(new Bomb(hero.posX / Map.tileSize, hero.posY / Map.tileSize + 1));
       } else {
-        bombs.add(new Bomb(hero.posX / 65, hero.posY / 65));
+        bombs.add(new Bomb(hero.posX / Map.tileSize, hero.posY / Map.tileSize));
       }
     } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
       System.exit(0);

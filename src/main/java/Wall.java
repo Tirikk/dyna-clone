@@ -52,7 +52,7 @@ public class Wall extends GameObject {
         }
       }
       picture.draw(g2d);
-      Map.mapMatrix[posY / 65][posX / 65] = 0;
+      Map.mapMatrix[posY / Map.tileSize][posX / Map.tileSize] = 0;
     };
     scheduler.schedule(changer, 0, TimeUnit.MILLISECONDS);
   }
