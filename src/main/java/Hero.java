@@ -1,212 +1,170 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class Hero extends Character {
-  private final ScheduledExecutorService moveScheduler = Executors.newScheduledThreadPool(1);
-  private final ScheduledExecutorService animScheduler = Executors.newScheduledThreadPool(1);
+class Hero extends Character {
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   private ScheduledFuture<?> moveUpHandle, moveDownHandle, moveLeftHandle, moveRightHandle;
-  private ScheduledFuture<?> downAnim, upAnim, leftAnim, rightAnim;
+  private String path = "src/main/resources/sprites/hero/hero-";
+  private List<String> spritesMovingUp = new ArrayList<>();
+  private List<String> spritesMovingDown = new ArrayList<>();
+  private List<String> spritesMovingLeft = new ArrayList<>();
+  private List<String> spritesMovingRight = new ArrayList<>();
   boolean moving;
-  boolean alive = true;
+
+  Hero() {
+    alive = true;
+    for (int i = 1; i < 9; i++) {
+      if(i < 4) {
+        spritesMovingUp.add(path.concat("up-" + i + ".png"));
+        spritesMovingDown.add(path.concat("down-" + i + ".png"));
+        spritesMovingLeft.add(path.concat("left-" + i + ".png"));
+        spritesMovingRight.add(path.concat("right-" + i + ".png"));
+      }
+      spritesDeath.add(path.concat("dead-" + i + ".png"));
+    }
+  }
 
   void moveHeroUp() {
     final Runnable mover = () -> {
       if (posY > 0) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65, posY / 65 - 1)) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - 1)) {
             posY--;
           }
-        } else if (posY % 65 == 0 && posX % 65 < 25) {
-          if (Map.isFloor(posX / 65, posY / 65 - 1)) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize - 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX += 1;
+            }
             posX--;
           }
-        } else if (posY % 65 == 0 && posX % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 - 1)) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize - 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX -= 1;
+            }
             posX++;
           }
-        } else if (posX % 65 == 0) {
+        } else if (posX % Map.tileSize == 0) {
           posY--;
         }
       }
       if (!moving || !alive) {
         moveUpHandle.cancel(true);
-        upAnim.cancel(true);
+        cancelAnim(0);
         image = "src/main/resources/sprites/hero/hero-up-2.png";
       }
     };
-    final Runnable animator = () -> {
-      try {
-        image = "src/main/resources/sprites/hero/hero-up-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-up-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-up-3.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-up-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-      } catch (InterruptedException e) {
-      }
-    };
-    moveUpHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
-    upAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
+    animate(spritesMovingUp, 0, 300, true, true);
+    moveUpHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroDown() {
     final Runnable mover = () -> {
-      if (posY < 650) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65, posY / 65 + 1)) {
+      if (posY < (Map.height - 1) * Map.tileSize) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0 && posX % 65 < 25) {
-          if (Map.isFloor(posX / 65, posY / 65 + 1)) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize, posY / Map.tileSize + 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX += 1;
+            }
             posX--;
           }
-        } else if (posY % 65 == 0 && posX % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 + 1)) {
+        } else if (posY % Map.tileSize == 0 && posX % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize + 1)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX -= 1;
+            }
             posX++;
           }
-        } else if (posX % 65 == 0) {
+        } else if (posX % Map.tileSize == 0) {
           posY++;
         }
       }
       if (!moving || !alive) {
         moveDownHandle.cancel(true);
-        downAnim.cancel(true);
+        cancelAnim(0);
         image = "src/main/resources/sprites/hero/hero-down-2.png";
       }
     };
-    final Runnable animator = () -> {
-      try {
-        image = "src/main/resources/sprites/hero/hero-down-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-down-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-down-3.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-down-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-      } catch (InterruptedException e) {
-      }
-    };
-    moveDownHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
-    downAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
+    animate(spritesMovingDown, 0, 300, true, true);
+    moveDownHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroLeft() {
     final Runnable mover = () -> {
       if (posX > 0) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65)) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX += 1;
+            }
             posX--;
           }
-        } else if (posX % 65 == 0 && posY % 65 < 25) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize)) {
             posY--;
           }
-        } else if (posX % 65 == 0 && posY % 65 > 40) {
-          if (Map.isFloor(posX / 65 - 1, posY / 65 + 1)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize - 1, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0) {
+        } else if (posY % Map.tileSize == 0) {
+          if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+            GameEngine.offsetX += 1;
+          }
           posX--;
         }
       }
       if (!moving || !alive) {
         moveLeftHandle.cancel(true);
-        leftAnim.cancel(true);
+        cancelAnim(0);
         image = "src/main/resources/sprites/hero/hero-left-2.png";
       }
     };
-    final Runnable animator = () -> {
-      try {
-        image = "src/main/resources/sprites/hero/hero-left-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-left-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-left-3.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-left-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-      } catch (InterruptedException e) {
-      }
-    };
-    moveLeftHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
-    leftAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
+    animate(spritesMovingLeft, 0, 300, true, true);
+    moveLeftHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 
   void moveHeroRight() {
     final Runnable mover = () -> {
-      if (posX < 650) {
-        if (posX % 65 == 0 && posY % 65 == 0) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65)) {
+      if (posX < (Map.width - 1) * Map.tileSize) {
+        if (posX % Map.tileSize == 0 && posY % Map.tileSize == 0) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize)) {
+            if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+              GameEngine.offsetX -= 1;
+            }
             posX++;
           }
-        } else if (posX % 65 == 0 && posY % 65 < 25) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize < 25) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize)) {
             posY--;
           }
-        } else if (posX % 65 == 0 && posY % 65 > 40) {
-          if (Map.isFloor(posX / 65 + 1, posY / 65 + 1)) {
+        } else if (posX % Map.tileSize == 0 && posY % Map.tileSize > 40) {
+          if (Map.isFloor(posX / Map.tileSize + 1, posY / Map.tileSize + 1)) {
             posY++;
           }
-        } else if (posY % 65 == 0) {
+        } else if (posY % Map.tileSize == 0) {
+          if (posX > 325 && posX < (Map.width -1 ) * Map.tileSize - 325) {
+            GameEngine.offsetX -= 1;
+          }
           posX++;
         }
       }
       if (!moving || !alive) {
         moveRightHandle.cancel(true);
-        rightAnim.cancel(true);
+        cancelAnim(0);
         image = "src/main/resources/sprites/hero/hero-right-2.png";
       }
     };
-    final Runnable animator = () -> {
-      try {
-        image = "src/main/resources/sprites/hero/hero-right-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-right-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-right-3.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-right-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-      } catch (InterruptedException e) {
-      }
-    };
-    moveRightHandle = moveScheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
-    rightAnim = animScheduler.scheduleAtFixedRate(animator, 0, 300, TimeUnit.MILLISECONDS);
-  }
-
-  void die() {
-    alive = false;
-    final Runnable animator = () -> {
-      try {
-        image = "src/main/resources/sprites/hero/hero-dead-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-1.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-2.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-3.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-4.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-5.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-6.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-7.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        image = "src/main/resources/sprites/hero/hero-dead-8.png";
-        TimeUnit.MILLISECONDS.sleep(300);
-        GameEngine.toDraw.remove(GameEngine.toDraw.size() - 1);
-      } catch (InterruptedException e) {
-      }
-    };
-    animScheduler.schedule(animator, 0, TimeUnit.MILLISECONDS);
+    animate(spritesMovingRight, 0, 300, true, true);
+    moveRightHandle = scheduler.scheduleAtFixedRate(mover, 0, 10, TimeUnit.MILLISECONDS);
   }
 }

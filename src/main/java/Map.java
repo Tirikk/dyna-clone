@@ -1,7 +1,10 @@
 import java.awt.*;
 
 public class Map {
-  static int[][] mapMatrix = new int[11][11];
+  static int tileSize = 65;
+  static int height = 11;
+  static int width = 15;
+  static int[][] mapMatrix = new int[height][width];
 
   static void drawBackGround(Graphics g) {
     PositionedImage image = new PositionedImage("src/main/resources/sprites/map/background.png", 0, 0);
@@ -9,8 +12,8 @@ public class Map {
   }
 
   static void generateMatrix() {
-    for (int column = 0; column < 11; column++) {
-      for (int row = 0; row < 11; row++) {
+    for (int column = 0; column < height; column++) {
+      for (int row = 0; row < width; row++) {
         if (column % 2 != 0 && row % 2 != 0) {
           mapMatrix[column][row] = 1;
         } else if ((int) (Math.random() * 3) == 1) {
@@ -26,10 +29,10 @@ public class Map {
   }
 
   static void generateWalls() {
-    for (int column = 0; column < 11; column++) {
-      for (int row = 0; row < 11; row++) {
+    for (int column = 0; column < height; column++) {
+      for (int row = 0; row < width; row++) {
         if (mapMatrix[column][row] == 2) {
-          Wall.wallList.add(new Wall(row * 65, column * 65));
+          Wall.wallList.add(new Wall(row * tileSize, column * tileSize));
         }
       }
     }
@@ -37,5 +40,9 @@ public class Map {
 
   static boolean isFloor(int column, int row) {
     return mapMatrix[row][column] == 0;
+  }
+
+  static boolean isWall(int column, int row) {
+    return mapMatrix[row][column] == 2;
   }
 }

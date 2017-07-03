@@ -5,37 +5,41 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine extends JComponent implements KeyListener {
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(0);
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
   private Hero hero = new Hero();
-  static ArrayList<GameObject> toDraw = new ArrayList<>();
-  private ArrayList<Character> enemyList = new ArrayList<>();
+  static ArrayList<Character> characters = new ArrayList<>();
+  static ArrayList<GameObject> bombs = new ArrayList<>();
+  static ArrayList<BlastRadius> blasts = new ArrayList<>();
+
+  static int offsetX = 0;
+
+  static ArrayList<Character> enemyList = new ArrayList<>();
   private int keyPressed = 0;
-  static boolean bombAlive = false;
 
   GameEngine() {
     setPreferredSize(new Dimension(715, 715));
     setVisible(true);
     setOpaque(false);
-    generateElements(getGraphics());
+    generateElements();
   }
 
-  private void generateElements(Graphics g) {
+  private void generateElements() {
     Map.generateMatrix();
     Map.generateWalls();
-    Background.drawImage();
+    Background.drawBackground();
+    Background.drawWalls();
     hero.posX = 0;
     hero.posY = 0;
     hero.image = "src/main/resources/sprites/hero/hero-down-2.png";
-    Monster.generateMonsters(3);
+    Monster.generateMonsters(4);
     for (Monster monster : Monster.monsterList) {
-      toDraw.add(monster);
+      characters.add(monster);
       enemyList.add(monster);
     }
-    toDraw.add(hero);
+    characters.add(hero);
     moveEnemies();
     repaintCanvas();
   }
@@ -46,13 +50,12 @@ public class GameEngine extends JComponent implements KeyListener {
         enemy.move();
       }
     };
-    final ScheduledFuture<?> moverHandle =
-            scheduler.scheduleAtFixedRate(mover, 30, 30, TimeUnit.MILLISECONDS);
+    scheduler.scheduleAtFixedRate(mover, 30, 30, TimeUnit.MILLISECONDS);
   }
 
   private void repaintCanvas() {
     final Runnable repainter = this::repaint;
-    final ScheduledFuture<?> repainterHandle = scheduler.scheduleAtFixedRate(repainter, 0, 30, TimeUnit
+    scheduler.scheduleAtFixedRate(repainter, 0, 30, TimeUnit
             .MILLISECONDS);
   }
 
@@ -103,29 +106,72 @@ public class GameEngine extends JComponent implements KeyListener {
         keyPressed--;
       }
       hero.moving = false;
-    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive && !bombAlive) {
-      if (hero.posX % 65 > 35 && hero.posY % 65 == 0) {
-        toDraw.add(new Bomb(hero.posX / 65 + 1, hero.posY / 65));
-        bombAlive = true;
-      } else if (hero.posY % 65 > 35 && hero.posX % 65 == 0) {
-        toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65 + 1));
-        bombAlive = true;
+    } else if (e.getKeyCode() == KeyEvent.VK_SPACE && hero.alive && bombs.size() < 1) {
+      if (hero.posX % Map.tileSize > 35 && hero.posY % Map.tileSize == 0) {
+        bombs.add(new Bomb(hero.posX / Map.tileSize + 1, hero.posY / Map.tileSize));
+      } else if (hero.posY % Map.tileSize > 35 && hero.posX % Map.tileSize == 0) {
+        bombs.add(new Bomb(hero.posX / Map.tileSize, hero.posY / Map.tileSize + 1));
       } else {
-        toDraw.add(new Bomb(hero.posX / 65, hero.posY / 65));
-        bombAlive = true;
+        bombs.add(new Bomb(hero.posX / Map.tileSize, hero.posY / Map.tileSize));
+      }
+    } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+      System.exit(0);
+    }
+  }
+
+  public static int getCharacterIndex(int x, int y) {
+    int i = 0;
+    for (GameObject character : characters) {
+      if (x == character.posX && y == character.posY) {
+        i = characters.indexOf(character);
       }
     }
+    return i;
+  }
+
+  public static int getEnemyIndex(int x, int y) {
+    int i = 0;
+    for (GameObject enemy : enemyList) {
+      if (x == enemy.posX && y == enemy.posY) {
+        i = characters.indexOf(enemy);
+      }
+    }
+    return i;
   }
 
   @Override
   public void paint(Graphics graphics) {
+    graphics.translate(offsetX, 0);
     graphics.drawImage(Background.bImage, 0, 0, null);
-    for (GameObject enemy : enemyList) {
-      if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive) {
+    for (Character enemy : enemyList) {
+      if (Math.abs(enemy.posX - hero.posX) < 25 && Math.abs(enemy.posY - hero.posY) < 25 && hero.alive && enemy.alive) {
         hero.die();
       }
     }
-    for (GameObject object : toDraw) {
+    for (BlastRadius blastRadius : blasts) {
+      for (GameObject blast : blastRadius.radius) {
+        PositionedImage image = new PositionedImage(blast.image, blast.posX, blast.posY);
+        image.draw(graphics);
+        if (Math.abs(blast.posX - hero.posX) < 40 && Math.abs(blast.posY - hero.posY) < 40 && hero.alive) {
+          hero.die();
+        }
+        for (Character enemy : enemyList) {
+          if (Math.abs(blast.posX - enemy.posX) < 40 && Math.abs(blast.posY - enemy.posY) < 40 && enemy.alive) {
+            enemy.die();
+          }
+        }
+      }
+      for (GameObject bomb : bombs) {
+        if (Math.abs(bomb.posX - hero.posX) < 40 && Math.abs(bomb.posY - hero.posY) < 40 && hero.alive) {
+          hero.die();
+        }
+      }
+    }
+    for (GameObject bomb : bombs) {
+      PositionedImage image = new PositionedImage(bomb.image, bomb.posX, bomb.posY);
+      image.draw(graphics);
+    }
+    for (GameObject object : characters) {
       PositionedImage image = new PositionedImage(object.image, object.posX, object.posY);
       image.draw(graphics);
     }
